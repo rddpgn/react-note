@@ -9,7 +9,8 @@ export class App extends Component {
   constructor() {
     super();
     this.state = {
-      notebooks: []
+      notebooks: [],
+      currentNote: -1
     }
   }
   addNotebook() {
@@ -40,10 +41,10 @@ export class App extends Component {
   }
   noteBookSetTitle(id, title) {
     if (typeof(id) === 'undefined') { console.error('Id of notebook must be transferred'); return }
-    if (typeof(id) != 'number') { console.error('Id of notebook must be Number'); return }
+    if (typeof(id) !== 'number') { console.error('Id of notebook must be Number'); return }
     if (!title) {console.error('Title must be transferred'); return }
 
-    this.setState((state, props) => {
+    this.setState((state) => {
       state.notebooks.map((notebook) => {
         if (notebook.id === id) {
           notebook.title = title;
@@ -53,15 +54,69 @@ export class App extends Component {
     })
     this.forceUpdate();
   }
+  noteSetTitle(noteId, notebookId, title) {
+    if (typeof(noteId) === 'undefined') { console.error('Id of note must be transferred'); return }
+    if (typeof(notebookId) === 'undefined') { console.error('Id of notebook must be transferred'); return }
+    if (typeof(noteId) !== 'number') { console.error('Id of note must be Number'); return }
+    if (typeof(notebookId) !== 'number') { console.error('Id of notebook must be Number'); return }
+    if (!title) {console.error('Title must be transferred'); return }
+
+    this.setState((state) => {
+      let notebook = state.notebooks.filter((notebook) => {
+        return notebook.id === notebookId;
+      })[0];
+
+      notebook.notes.map((note) => {
+        if (note.id === noteId) {
+          note.title = title;
+        }
+        return note;
+      })
+    })
+
+    this.forceUpdate();
+  }
+  deleteNote(noteId, notebookId) {
+    if (typeof(noteId) === 'undefined') { console.error('Id of note must be transferred'); return }
+    if (typeof(notebookId) === 'undefined') { console.error('Id of notebook must be transferred'); return }
+    if (typeof(noteId) !== 'number') { console.error('Id of note must be Number'); return }
+    if (typeof(notebookId) !== 'number') { console.error('Id of notebook must be Number'); return }
+
+    this.setState((state) => {
+      let notebook = state.notebooks.filter((notebook) => {
+        return notebook.id === notebookId;
+      })[0];
+
+      notebook.notes = notebook.notes.filter((note) => {
+        return note.id !== noteId;
+      })
+    })
+
+    this.forceUpdate();
+  }
+  deleteNotebook(id) {
+    if (typeof(id) === 'undefined') { console.error('Id of notebook must be transferred'); return }
+    if (typeof(id) !== 'number') { console.error('Id of notebook must be Number'); return }
+
+    this.setState({
+      notebooks: this.state.notebooks.filter((notebook) => { return notebook.id !== id;})
+    })
+
+    this.forceUpdate();
+  }
   render() {
     return (
       <div>
         <Header />
         <div>
-         <NoteContainer notebooks={this.state.notebooks} 
-                        addNotebook={this.addNotebook.bind(this)}
-                        addNote={this.addNote.bind(this)} 
-                        noteBookSetTitle={this.noteBookSetTitle.bind(this)}/>
+         <NoteContainer notebooks = {this.state.notebooks} 
+                        addNotebook = {this.addNotebook.bind(this)}
+                        addNote = {this.addNote.bind(this)} 
+                        noteBookSetTitle = {this.noteBookSetTitle.bind(this)}
+                        noteSetTitle = {this.noteSetTitle.bind(this)}
+                        deleteNote = {this.deleteNote.bind(this)}
+                        deleteNotebook = {this.deleteNotebook.bind(this)}
+          />
         </div>
       </div>
     )
