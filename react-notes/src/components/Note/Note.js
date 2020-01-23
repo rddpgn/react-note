@@ -22,6 +22,7 @@ export class Note extends Component {
         this.setState({
             isEditingTitle: false,
         })
+        this.setCurrentNote();
     }
     handleOnBlur(e) {
         this.setTitle(e.target.value);
@@ -44,16 +45,20 @@ export class Note extends Component {
         
         e.stopPropagation();
     }
+    setCurrentNote() {
+        this.props.setCurrentNote(this.props.note.id);
+    }
     render() {
         return (
-            <div className='note'>
+            <div className='note' onClick={this.setCurrentNote.bind(this)}>
                 <input ref={this.inputRef}
                        style={{'display' : this.state.isEditingTitle? 'block' : 'none'}}
                        onKeyDown={this.handleSubmit.bind(this)}
                        onBlur={this.handleOnBlur.bind(this)} 
                 >
                 </input>
-                <div className='note__title' style={{'display' : this.state.isEditingTitle? 'none' : 'flex'}}>
+                <div className={`note__title ${this.props.note.id === this.props.currentNote? 'note__title_active':''}`} 
+                     style={{'display' : this.state.isEditingTitle? 'none' : 'flex'}}>
                     <h3> {this.props.note.title} </h3>
                     <button onClick={this.editTitle.bind(this)}>Edit</button>
                     <button onClick={this.removeSelf.bind(this)}>X</button>

@@ -1,9 +1,18 @@
 .note {
     background-color: rgba(0,0,0,0.03);
+    cursor: pointer;
+}
+
+.note:hover {
+    background-color: rgba(0,0,0,0.05);
 }
 
 .note__title {
     flex-direction: row;
+}
+
+.note__title_active {
+    background-color: rgba(0,0,0,0.1);
 }
 
 .note__title > :first-child {

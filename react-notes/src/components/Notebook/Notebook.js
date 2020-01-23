@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Note from '../Note/Note.js';
 import './Notebook.scss';
 
 export class Notebook extends Component {
@@ -11,15 +10,6 @@ export class Notebook extends Component {
             isOpen: false,
         }
         this.inputRef = React.createRef();
-    }
-    getNotesComponents() {
-        return this.props.notes.map((note) => {
-            return <Note note={note}
-                         key={note.id}
-                         setTitle={this.props.setNoteTitle}
-                         removeSelf={this.props.removeNote}
-            />
-        })
     }
     setTitle(value) {
         let title = value || 'Notebook';
@@ -87,7 +77,7 @@ export class Notebook extends Component {
                      style={{'display' : this.state.isOpen? 'flex' : 'none'}}
                 >
                     <button onClick={this.addNote.bind(this)}>Add note</button>
-                    {this.getNotesComponents()}
+                    {this.props.notes}
                 </div>
             </div>
         )
