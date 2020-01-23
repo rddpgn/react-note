@@ -6,9 +6,10 @@ export class Notebook extends Component {
     constructor() {
         super();
         this.state = {
-            opened: true,
+            opened: false,
             writingTitle: true,
             defaultTitle: 'Notebook',
+            gotName: false,
         }
         this.inputRef = React.createRef();
     }
@@ -20,13 +21,14 @@ export class Notebook extends Component {
                          noteSetTitle = {this.props.noteSetTitle}
                          notebookId = {this.props.notebook.id}
                          deleteNote = {this.props.deleteNote}
+                         setCurrentNote = {this.props.setCurrentNote}
                     />;
         });
     }
     isDisplayed() {
         return this.state.opened? 'block':'none';
     }
-    notesDisplayToggle(e) {
+    notesDisplayToggle() {
         if (!this.state.writingTitle) { 
             this.setState({ opened: !this.state.opened});
         }
@@ -35,6 +37,10 @@ export class Notebook extends Component {
         this.setState({ writingTitle: false });
         let title = value || this.state.defaultTitle
         this.props.noteBookSetTitle(this.props.notebook.id, title);
+
+        if (!this.state.gotName) {
+            this.setState({ gotName: true, opened: true });
+        }
     }
     handleSubmit(e) {
         if(e.key === 'Enter') {
@@ -85,9 +91,21 @@ export class Notebook extends Component {
                     <button onClick = {(e) => this.delete.call(this, e)}>Del </button>
                     <span>{this.state.opened?'▼':'▲'}</span>
                 </div>
-                <div style={{'display': this.isDisplayed() }}>
-                    <button onClick={this.addNote.bind(this)}>Add note</button> 
-                    {this.getArrayOfNotes(this.props.notebook.notes)}
+                <div style={{'height': this.state.opened? `${1.4 + 1.4*this.props.notebook.notes.length}rem`:'0'}} 
+                     className='notes-wrapper'>
+                    <button className='note note_add' onClick={this.addNote.bind(this)}>Add note</button>
+                    <div style={{'height': this.state.opened? `${1.4*this.props.notebook.notes.length}rem`:'0'}}
+                         className='notes-wrapper'>
+                    { this.props.notebook.notes? this.props.notebook.notes.map((note) => {
+                            return <Note note = {note} 
+                                        key = {note.id}
+                                        noteSetTitle = {this.props.noteSetTitle}
+                                        notebookId = {this.props.notebook.id}
+                                        deleteNote = {this.props.deleteNote}
+                                        setCurrentNote = {this.props.setCurrentNote}
+                                    />;
+                        }) : null}
+                    </div>
                 </div>
             </div>
         )

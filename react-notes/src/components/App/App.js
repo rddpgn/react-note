@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Header from '../Header/Header.js';
 import NoteContainer from '../NoteContainer/NoteContainer.js';
+import TextContainer from '../TextContainer/TextContainer.js';
 
 import './App.scss';
 
@@ -10,7 +11,7 @@ export class App extends Component {
     super();
     this.state = {
       notebooks: [],
-      currentNote: -1
+      currentNote: -1,
     }
   }
   addNotebook() {
@@ -104,11 +105,38 @@ export class App extends Component {
 
     this.forceUpdate();
   }
+  setCurrentNote(noteId, notebookId) {
+    if (typeof(noteId) === 'undefined') { console.error('Id of note must be transferred'); return }
+    if (typeof(notebookId) === 'undefined') { console.error('Id of notebook must be transferred'); return }
+    if (typeof(noteId) !== 'number') { console.error('Id of note must be Number'); return }
+    if (typeof(notebookId) !== 'number') { console.error('Id of notebook must be Number'); return }
+
+    this.setState({
+      currentNote: { noteId, notebookId }
+    })
+    this.forceUpdate();
+  }
+  getCurrentNoteBody() {
+    if (this.state.currentNote !== -1) {
+      let notebook = this.state.notebooks[this.state.currentNote.notebookId]
+      if (notebook !== undefined) {
+        let note = notebook.notes[this.state.currentNote.noteId];
+        if (note != undefined) {
+          return note.body;
+        }
+      }      
+    }
+    return null;
+  }
+  updateTextarea(e) {
+    this.state.notebooks[this.state.currentNote.notebookId].notes[this.state.currentNote.noteId].body = e.target.value;
+    this.forceUpdate();
+  }
   render() {
     return (
-      <div>
+      <>
         <Header />
-        <div>
+        <div className='app'>
          <NoteContainer notebooks = {this.state.notebooks} 
                         addNotebook = {this.addNotebook.bind(this)}
                         addNote = {this.addNote.bind(this)} 
@@ -116,11 +144,28 @@ export class App extends Component {
                         noteSetTitle = {this.noteSetTitle.bind(this)}
                         deleteNote = {this.deleteNote.bind(this)}
                         deleteNotebook = {this.deleteNotebook.bind(this)}
-          />
+                        setCurrentNote = {this.setCurrentNote.bind(this)}
+         />
+         
+         { this.state.currentNote !== -1? 
+          <textarea value={this.getCurrentNoteBody()} onChange={this.updateTextarea.bind(this)}></textarea>
+          : null
+         }
+         
         </div>
-      </div>
+      </>
     )
   }
 }
 
 export default App;
+
+
+/*
+{ this.state.currentNote !== -1? 
+          <TextContainer note = {this.state.notebooks[this.state.currentNote.notebookId].notes[this.state.currentNote.noteId]}
+                         setNoteBody = { this.setNoteBody.bind(this) }
+          /> :
+          null
+         }
+         */

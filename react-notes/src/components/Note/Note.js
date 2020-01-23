@@ -18,6 +18,7 @@ export class Note extends Component {
         this.setState({ writingTitle: false });
         let title = value || this.state.defaultTitle
         this.props.noteSetTitle(this.props.note.id, this.props.notebookId, title);
+        this.setCurrentNote();
     }
     handleSubmit(e) {
         if(e.key === 'Enter') {
@@ -40,17 +41,21 @@ export class Note extends Component {
         this.props.deleteNote(this.props.note.id, this.props.notebookId);
         e.stopPropagation();
     }
+    setCurrentNote() {
+        this.props.setCurrentNote(this.props.note.id, this.props.notebookId);
+    }
     render() {
         return (
-            <div>
+            <div onClick={this.setCurrentNote.bind(this)} className='note'>
                 <input ref = {this.inputRef}
                        style = {{'display':this.state.writingTitle? 'block' : 'none'}}
                        onKeyDown = {(e) => this.handleSubmit(e)}
                        onBlur = {(e) => this.handleOnBlur(e)}
+                       className='note__title-field'
                 />
-                <div className='note-title'
+                <div className='note__name'
                      style = {{'display':this.state.writingTitle? 'none' : 'flex'}}>
-                    <h3> {this.props.note.title} </h3>
+                    <h3 className='note__name-header'> {this.props.note.title} </h3>
                     <button onClick = {(e) => this.renameTitle.call(this, e)}>redact</button>
                     <button onClick = {(e) => this.delete.call(this, e)}>Delete</button>
                 </div>

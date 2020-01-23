@@ -1,5 +1,15 @@
 .note-container {
-    width: 33vw;
-    background: rgb(228, 228, 228);
+    width: 30vw;
+    background: rgb(32,32,32);
     height: 100vh;
+    padding: 1rem;
+    padding-right: 0;
+    padding-bottom: 5rem;
+    position: fixed;
+    overflow-x: scroll;
+}
+
+.note-container__add-notebook {
+    color: white;
+    margin: 0.5rem 0;
 }
