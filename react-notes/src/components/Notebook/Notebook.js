@@ -73,11 +73,16 @@ export class Notebook extends Component {
                     >       
                     </input>
                 </div>
-                <div className='notebook__notes'
-                     style={{'display' : this.state.isOpen? 'flex' : 'none'}}
+                <div className='notebook__notes-wrapper'
+                     style={{'height': this.state.isOpen? `${2.8 + 1.4*this.props.notes.length}rem`:0}}
                 >
-                    <button onClick={this.addNote.bind(this)}>Add note</button>
-                    {this.props.notes}
+                    <button onClick={this.addNote.bind(this)} 
+                            className='note note_add-note'>
+                        Add note
+                    </button>
+                    <div className='notebook__notes'>
+                        {this.props.notes}
+                    </div> 
                 </div>
             </div>
         )

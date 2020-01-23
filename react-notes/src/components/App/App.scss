@@ -3,9 +3,13 @@
 @import url('https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700&display=swap&subset=cyrillic');
 
 :root {
-  font-size: 2vw;
+  font-size: 1vw;
   font-family: Arial, Helvetica, sans-serif;
   font-family: 'Anonymous Pro', monospace;
+}
+
+body {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -21,14 +25,23 @@ button {
   border: none;
   outline: none;
   font-family: 'Anonymous Pro', monospace;
+  text-align: left;
 }
 
 .notebook-wrapper {
-  padding: 1rem;
+  padding: 2rem 2rem 4rem;
   display: flex;
   flex-direction: column;
-  width: 33vw;
+  width: 25vw;
   align-items: flex-start;
+  overflow-y: scroll;
+  position: fixed;
+  left: 0;
+  height: 100vh;
+}
+
+.notebook-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .notebook-wrapper > *{
@@ -36,5 +49,21 @@ button {
 }
 
 .app {
+  width: 100%;
   display: flex;
+  justify-content: center;
 }
+
+.notebook-wrapper__add-notebook {
+  padding: 0.4rem;
+  background-color: rgba(0,0,0,0.1);
+  color: rgba(0,0,0,0.7);
+  font-weight: bold;
+  transition: color 0.1s, background-color 0.1s;
+}
+
+.notebook-wrapper__add-notebook:hover {
+  background-color: rgb(139, 120, 223);
+  color: white;
+}
+

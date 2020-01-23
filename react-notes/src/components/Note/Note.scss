@@ -1,20 +1,49 @@
 .note {
-    background-color: rgba(0,0,0,0.03);
-    cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  margin-left: 1rem;
+
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer */
+  -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+
+  padding: 0.2rem;
+  max-height: 1.4rem;
+
+  input {
+    padding: 0.2rem;
+    max-height: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(160, 160, 160);
+    outline: none;
+  }
+}
+
+.note_add-note:hover {
+  background-color: rgb(159, 143, 233) !important;
+  transition: background-color 0.1s;
+  color: white;
 }
 
 .note:hover {
-    background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.075);
 }
 
 .note__title {
-    flex-direction: row;
+  flex-direction: row;
 }
 
-.note__title_active {
-    background-color: rgba(0,0,0,0.1);
+.note__title :first-child {
+  flex-grow: 1;
+}
+
+.note_active {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .note__title > :first-child {
-    flex-grow: 1;
+  flex-grow: 1;
 }

@@ -146,11 +146,13 @@ export class App extends Component {
     return note? note.title : 'No note';
   }
   render() {
-    console.log(this.getTextAreaValue())
     return (
         <div className='app'>
           <div className='notebook-wrapper'>
-            <button onClick = {this.addNotebook.bind(this)}>Add Notebook</button>
+            <button onClick = {this.addNotebook.bind(this)}
+                    className = 'notebook-wrapper__add-notebook'>
+                Add Notebook
+              </button>
             {this.getNotebooksComponents()}
           </div>
           <div>
