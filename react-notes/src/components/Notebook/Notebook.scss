@@ -1,27 +1,15 @@
 .notebook {
-    cursor: pointer;
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer */
-    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
-    -webkit-user-select: none; /* Chrome, Safari, and Opera */
-    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
-    color: white;
-    margin-left: 0.5rem;
+    background-color: rgba(0,0,0,0.03);
 }
 
-.notebook-title {
-    display: flex;
+.notebook__notes {
+    flex-direction: column;
+}
+
+.notebook__title {
     flex-direction: row;
-    justify-content: space-between;
-
-    * {
-        display: block;
-    }
-    background: rgb(48,48,48);
-    padding: 0.5rem 1rem;
 }
 
-.notes-wrapper {
-    overflow: hidden;
-    transition: height 0.2s;
+.notebook__title > :first-child {
+    flex-grow: 1;
 }

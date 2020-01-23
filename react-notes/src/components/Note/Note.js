@@ -1,68 +1,70 @@
 import React, { Component } from 'react';
-import './Note.scss';
+import PropTypes from 'prop-types';
+import './Note.scss'
 
 export class Note extends Component {
     constructor() {
         super();
         this.state = {
-            writingTitle: true,
-            defaultTitle: 'Note',
+            isEditingTitle: true,
         }
         this.inputRef = React.createRef();
     }
-    componentDidMount() {
-        this.setState({ defaultTitle: `Note ${this.props.note.id}`});
-        this.focusInput();
-    }
-    titleSubmit(value) {
-        this.setState({ writingTitle: false });
-        let title = value || this.state.defaultTitle
-        this.props.noteSetTitle(this.props.note.id, this.props.notebookId, title);
-        this.setCurrentNote();
-    }
-    handleSubmit(e) {
-        if(e.key === 'Enter') {
-            this.titleSubmit(e.target.value);
-        }
-    }
-    handleOnBlur(e) {
-        if (this.state.writingTitle) {
-            this.titleSubmit(e.target.value);
-        }
-    }
-    renameTitle(e) {
-        this.setState({ writingTitle: true }, this.focusInput);
-        e.stopPropagation();
-    }
-    focusInput() {
+    focusOnInput() {
         this.inputRef.current.focus();
     }
-    delete(e) {
-        this.props.deleteNote(this.props.note.id, this.props.notebookId);
+    componentDidMount() {
+        this.focusOnInput();
+    }
+    setTitle(value) {
+        let title = value || 'Note';
+        this.props.setTitle(this.props.note.id, title);
+        this.setState({
+            isEditingTitle: false,
+        })
+    }
+    handleOnBlur(e) {
+        this.setTitle(e.target.value);
         e.stopPropagation();
     }
-    setCurrentNote() {
-        this.props.setCurrentNote(this.props.note.id, this.props.notebookId);
+    handleSubmit(e) {
+        if (e.key === 'Enter') {
+            this.setTitle(e.target.value);
+        }
+        e.stopPropagation();
+    }
+    removeSelf(e) {
+        this.props.removeSelf(this.props.note.id);
+        e.stopPropagation();
+    }
+    editTitle(e) {
+        this.setState({
+            isEditingTitle: true,
+        }, this.focusOnInput);
+        
+        e.stopPropagation();
     }
     render() {
         return (
-            <div onClick={this.setCurrentNote.bind(this)} className='note'>
-                <input ref = {this.inputRef}
-                       style = {{'display':this.state.writingTitle? 'block' : 'none'}}
-                       onKeyDown = {(e) => this.handleSubmit(e)}
-                       onBlur = {(e) => this.handleOnBlur(e)}
-                       className='note__title-field'
-                />
-                <div className='note__name'
-                     style = {{'display':this.state.writingTitle? 'none' : 'flex'}}>
-                    <h3 className='note__name-header'> {this.props.note.title} </h3>
-                    <button onClick = {(e) => this.renameTitle.call(this, e)}>redact</button>
-                    <button onClick = {(e) => this.delete.call(this, e)}>Delete</button>
+            <div className='note'>
+                <input ref={this.inputRef}
+                       style={{'display' : this.state.isEditingTitle? 'block' : 'none'}}
+                       onKeyDown={this.handleSubmit.bind(this)}
+                       onBlur={this.handleOnBlur.bind(this)} 
+                >
+                </input>
+                <div className='note__title' style={{'display' : this.state.isEditingTitle? 'none' : 'flex'}}>
+                    <h3> {this.props.note.title} </h3>
+                    <button onClick={this.editTitle.bind(this)}>Edit</button>
+                    <button onClick={this.removeSelf.bind(this)}>X</button>
                 </div>
-                
             </div>
         )
     }
 }
 
-export default Note;
+Note.propTypes = {
+    note: PropTypes.object,
+}
+
+export default Note

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Note from '../Note/Note.js';
 import './Notebook.scss';
 
@@ -6,110 +7,96 @@ export class Notebook extends Component {
     constructor() {
         super();
         this.state = {
-            opened: false,
-            writingTitle: true,
-            defaultTitle: 'Notebook',
-            gotName: false,
+            isEditingTitle: true,
+            isOpen: false,
         }
         this.inputRef = React.createRef();
     }
-    getArrayOfNotes(notes) {
-        if (!notes) return null;
-        return notes.map((note) => {
-            return <Note note = {note} 
-                         key = {note.id}
-                         noteSetTitle = {this.props.noteSetTitle}
-                         notebookId = {this.props.notebook.id}
-                         deleteNote = {this.props.deleteNote}
-                         setCurrentNote = {this.props.setCurrentNote}
-                    />;
-        });
+    getNotesComponents() {
+        return this.props.notes.map((note) => {
+            return <Note note={note}
+                         key={note.id}
+                         setTitle={this.props.setNoteTitle}
+                         removeSelf={this.props.removeNote}
+            />
+        })
     }
-    isDisplayed() {
-        return this.state.opened? 'block':'none';
-    }
-    notesDisplayToggle() {
-        if (!this.state.writingTitle) { 
-            this.setState({ opened: !this.state.opened});
-        }
-    }
-    titleSubmit(value) {
-        this.setState({ writingTitle: false });
-        let title = value || this.state.defaultTitle
-        this.props.noteBookSetTitle(this.props.notebook.id, title);
-
-        if (!this.state.gotName) {
-            this.setState({ gotName: true, opened: true });
-        }
-    }
-    handleSubmit(e) {
-        if(e.key === 'Enter') {
-            this.titleSubmit(e.target.value);
-        }
+    setTitle(value) {
+        let title = value || 'Notebook';
+        this.props.setTitle(this.props.notebook.id, title);
+        this.setState({
+            isEditingTitle: false,
+        })
     }
     handleOnBlur(e) {
-        if (this.state.writingTitle) {
-            this.titleSubmit(e.target.value);
-        }
-    }
-    renameTitle(e) {
-        this.setState({writingTitle: true}, this.focusInput);
+        this.setTitle(e.target.value);
         e.stopPropagation();
+    }
+    handleSubmit(e) {
+        if (e.key === 'Enter') {
+            this.setTitle(e.target.value);
+        }
+        e.stopPropagation();
+    }
+    handleOpening() {
+        this.setState({
+            isOpen: !this.state.isOpen,
+        })
+    }
+    componentDidMount() {
+        this.focusOnInput();
     }
     addNote() {
         this.props.addNote(this.props.notebook.id);
     }
-    componentDidMount() {
-        this.focusInput();
-        this.setState({ defaultTitle: `Notebook ${this.props.notebook.id}`})
-    }
-    focusInput() {
-        this.inputRef.current.focus();
-    }
-    delete(e) {
-        if (window.confirm('Are you sure you want to delete?')) {
-            this.props.deleteNotebook(this.props.notebook.id);
-        }
+    removeSelf(e) {
+        this.props.removeSelf(this.props.notebook.id);
         e.stopPropagation();
+    }
+    editTitle(e) {
+        this.setState({
+            isEditingTitle: true,
+        }, this.focusOnInput);
+        
+        e.stopPropagation();
+    }
+    focusOnInput() {
+        this.inputRef.current.focus();
     }
     render() {
         return (
-            <div className='notebook' >
-                <input ref={this.inputRef} 
-                       style={{'display': this.state.writingTitle? 'block' : 'none' }} 
-                       onKeyDown={(e) => this.handleSubmit(e)} 
-                       onBlur={(e) => this.handleOnBlur(e)} 
-                       type="text"
-                />
-                
-                <div className='notebook-title' 
-                     style={{'display': this.state.writingTitle? 'none' : 'flex' }} 
-                     onClick={this.notesDisplayToggle.bind(this)}>
-
-                    <h2>{this.props.notebook.title }</h2>
-                    <button onClick = {(e) => this.renameTitle.call(this, e)}>Redact</button> 
-                    <button onClick = {(e) => this.delete.call(this, e)}>Del </button>
-                    <span>{this.state.opened?'▼':'▲'}</span>
-                </div>
-                <div style={{'height': this.state.opened? `${1.4 + 1.4*this.props.notebook.notes.length}rem`:'0'}} 
-                     className='notes-wrapper'>
-                    <button className='note note_add' onClick={this.addNote.bind(this)}>Add note</button>
-                    <div style={{'height': this.state.opened? `${1.4*this.props.notebook.notes.length}rem`:'0'}}
-                         className='notes-wrapper'>
-                    { this.props.notebook.notes? this.props.notebook.notes.map((note) => {
-                            return <Note note = {note} 
-                                        key = {note.id}
-                                        noteSetTitle = {this.props.noteSetTitle}
-                                        notebookId = {this.props.notebook.id}
-                                        deleteNote = {this.props.deleteNote}
-                                        setCurrentNote = {this.props.setCurrentNote}
-                                    />;
-                        }) : null}
+            <div className='notebook'>
+                <div onClick={this.handleOpening.bind(this)}>
+                    <div style={{'display' : this.state.isEditingTitle? 'none' : 'flex' }}
+                         className='notebook__title'
+                    >
+                        <h2>{this.props.notebook.title}</h2>
+                        <button onClick={this.editTitle.bind(this)}>Edit</button>
+                        <button onClick={this.removeSelf.bind(this)}>X</button>
                     </div>
+                    <input type='text' 
+                           style={{'display' : this.state.isEditingTitle? 'flex' : 'none' }}
+                           onKeyDown={this.handleSubmit.bind(this)}
+                           onBlur={this.handleOnBlur.bind(this)}
+                           ref={this.inputRef}
+                           className='notebook__title'
+                    >       
+                    </input>
+                </div>
+                <div className='notebook__notes'
+                     style={{'display' : this.state.isOpen? 'flex' : 'none'}}
+                >
+                    <button onClick={this.addNote.bind(this)}>Add note</button>
+                    {this.getNotesComponents()}
                 </div>
             </div>
         )
     }
+}
+
+Notebook.propTypes = {
+    notebook: PropTypes.object,
+    notes: PropTypes.array,
 }
 
 export default Notebook;

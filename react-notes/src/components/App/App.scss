@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700&display=swap&subset=cyrillic');
 
 :root {
-  font-size: 1vw;
+  font-size: 2vw;
   font-family: Arial, Helvetica, sans-serif;
   font-family: 'Anonymous Pro', monospace;
 }
@@ -20,9 +20,17 @@ button {
   background: none;
   border: none;
   outline: none;
+  font-family: 'Anonymous Pro', monospace;
 }
 
-.app {
+.notebook-wrapper {
+  padding: 1rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  width: 33vw;
+  align-items: flex-start;
+}
+
+.notebook-wrapper > *{
+  width: 100%;
 }
